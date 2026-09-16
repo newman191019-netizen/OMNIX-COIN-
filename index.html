@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNIX</title>
+<style>
+:root{
+  --bg:#0b0e11;
+  --panel:#131722;
+  --text:#e6e6e6;
+  --gold:#d4af37;
+  --green:#22c55e;
+  --red:#ef4444;
+}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial}
+
+/* Total Balance */
+#totalBalance{
+position:fixed;top:14px;left:14px;
+background:var(--gold);color:#000;
+padding:6px 10px;border-radius:8px;
+font-weight:800;z-index:1000;
+display:none;
+}
+
+/* Chart */
+#chartContainer{
+display:block;
+width:90%;max-width:900px;margin:20px auto;
+}
+#chartContainer canvas{
+width:100%;height:300px;background:#0d1117;border-radius:12px;
+}
+
+/* Buttons */
+header{
+background:#000;color:#fff;text-align:center;padding:14px;font-weight:800;font-size:20px;margin-top:60px
+}
+.container{padding:16px;max-width:900px;margin:60px auto}
+.card{background:var(--panel);border-radius:14px;padding:16px;margin-bottom:16px}
+.price{text-align:center;color:var(--gold);font-weight:900}
+.userid{text-align:center;color:var(--green);font-weight:800}
+.row{display:flex;gap:10px}
+.btn{flex:1;padding:12px;border:none;border-radius:10px;font-weight:800;cursor:pointer;}
+.buy{background:var(--green)}
+.withdraw{background:var(--red)}
+.balance{background:var(--gold)}
+.sendCoin{background:#3b82f6;color:#fff}
+.login input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:none}
+.login button{width:48%;padding:12px;background:#e11d48;color:#fff;border:none;border-radius:10px;font-weight:800;margin-right:4%}
+.verified{text-align:center;color:var(--green);display:none}
+
+/* Send Coin Form */
+#sendCoinForm{display:none;margin-top:10px;}
+#sendCoinForm input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:none;}
+#sendCoinForm button{padding:10px 16px;margin:4px;border:none;border-radius:8px;font-weight:800;cursor:pointer;}
+#confirmSendBtn{background:#22c55e;color:#000;}
+#showTxHistoryBtn{background:#d4af37;color:#000;}
+#txHistory{display:none;margin-top:10px;}
+.txItem{background:#1f2937;padding:8px;border-radius:8px;margin-bottom:6px;}
+.lockMessage{color:#ef4444;font-weight:800;margin-top:10px}
+
+/* Account Manager Button */
+#accountManagerContainer{
+position:fixed;
+top:14px;right:14px;
+z-index:1000;
+}
+#accountManagerBtn{
+background:#22c55e;color:#000;padding:6px 10px;border:none;border-radius:8px;font-weight:800;cursor:pointer;
+}
+
+/* Profile Button */
+#profileBtn{position:fixed;bottom:14px;left:14px;z-index:1000;}
+</style>
+
+</head>
+<body>
+
+<div id="totalBalance">
+  <span id="balanceAmount">0.00 OMX</span>
+  <button id="convertBtn" style="margin-left:6px;padding:4px 6px;border:none;border-radius:6px;background:#ef4444;color:#fff;font-weight:800;">Convert</button>
+</div>
+
+<div id="accountManagerContainer">
+  <button id="accountManagerBtn">Account Manager</button>
+</div>
+
+<header>💎 OMNIX — OMX</header>
+
+<div class="container">
+
+<div class="card">
+  <div class="price" id="omxPrice">1 OMX = ₦0</div>
+  <div id="userId" class="userid">User ID: ...</div>
+
+  <div id="actionsContainer" class="row" style="display:none;">
+    <button class="btn buy" onclick="sendRequest('buy')">Buy</button>
+    <button class="btn withdraw" onclick="sendRequest('withdraw')">Withdraw</button>
+    <button class="btn balance" onclick="sendRequest('balance')">Balance</button>
+    <button class="btn sendCoin" id="toggleSendCoinBtn">Send</button>
+  </div>
+
+  <!-- Send Coin Form -->
+  <div id="sendCoinForm">
+    <input type="text" id="receiverUID" placeholder="Receiver User ID">
+    <input type="number" id="sendAmount" placeholder="Amount">
+    <input type="password" id="senderPassword" placeholder="Your Login Password">
+    <button id="confirmSendBtn">Confirm Send</button>
+    <div class="lockMessage" id="lockMessage" style="display:none;"></div>
+    <button id="showTxHistoryBtn">Transaction History</button>
+  </div>
+
+  <div id="txHistory"></div>
+</div>
+
+<div id="loginBox" class="card login">
+  <h3>Login / Register</h3>
+  <input id="emailOrPhone" placeholder="Email or Phone">
+  <input id="password" type="password" placeholder="Password">
+  <div class="row">
+    <button onclick="login()">Login</button>
+    <button onclick="newAccount()">New Account</button>
+  </div>
+  <div id="verified" class="verified">Logged in</div>
+</div>
+
+</div>
+
+<div id="profileBtn">
+  <button style="background:var(--green);color:#000;padding:10px 14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;" onclick="toggleProfile()">Profile</button>
+</div>
+
+<div id="profileCard" class="card" style="position:fixed;bottom:60px;left:14px;width:250px;display:none;z-index:1000;">
+  <h3>Profile</h3>
+  <div>Email: <span id="profileEmail">...</span></div>
+  <div>User ID: <span id="profileUID">...</span></div>
+  <div>Balance: <span id="profileBalance">0.00 OMX</span></div>
+  <div class="row" style="margin-top:10px;">
+    <button onclick="logout()" style="background:#ef4444;color:#fff;width:100%;">Log Out</button>
+  </div>
+</div>
+
+<div id="chartContainer">
+  <canvas id="chart"></canvas>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+// Firebase setup
+firebase.initializeApp({
+  apiKey: "AIzaSyAOqTiP-jyyRszWdfl5h_kkNfrkccGaN-M",
+  authDomain: "omnix-c36ed.firebaseapp.com",
+  projectId: "omnix-c36ed"
+});
+
+const auth=firebase.auth(), db=firebase.firestore();
+
+let uid, userRef, currentBalance=0, RATE=0, wrongAttempts=0, lockUntil=0;
+
+// DOM elements
+const balanceAmountSpan=document.getElementById('balanceAmount');
+const convertBtn=document.getElementById('convertBtn');
+const actionsContainer=document.getElementById('actionsContainer');
+const omxPrice=document.getElementById('omxPrice');
+const profileCard=document.getElementById('profileCard');
+const profileUID=document.getElementById('profileUID');
+const profileEmail=document.getElementById('profileEmail');
+const profileBalance=document.getElementById('profileBalance');
+const chartCanvas=document.getElementById('chart');
+const ctx=chartCanvas.getContext("2d");
+const toggleSendCoinBtn=document.getElementById('toggleSendCoinBtn');
+const sendCoinForm=document.getElementById('sendCoinForm');
+const receiverUID=document.getElementById('receiverUID');
+const sendAmount=document.getElementById('sendAmount');
+const senderPassword=document.getElementById('senderPassword');
+const confirmSendBtn=document.getElementById('confirmSendBtn');
+const lockMessage=document.getElementById('lockMessage');
+const showTxHistoryBtn=document.getElementById('showTxHistoryBtn');
+const txHistory=document.getElementById('txHistory');
+const emailOrPhone=document.getElementById('emailOrPhone');
+const password=document.getElementById('password');
+const verified=document.getElementById('verified');
+const loginBox=document.getElementById('loginBox');
+
+// Utility
+function generateUID(){return Math.floor(100000000+Math.random()*900000000).toString();}
+function inputToEmail(input){input=input.trim(); return input.includes('@')?input:input.replace(/\s+/g,'')+'@omnix.app';}
+function updateBalanceDisplay(amount){currentBalance=Number(amount);balanceAmountSpan.innerText=currentBalance.toFixed(2)+" OMX";profileBalance.innerText=currentBalance.toFixed(2)+" OMX";document.getElementById('totalBalance').style.display="block";}
+
+// WhatsApp integration
+function sendRequest(type){
+  const phoneNumber = "2348137651231";
+  let message="";
+  if(type==="buy") message=`Hello, I want to buy OMX.\nMy User ID is ${uid}`;
+  else if(type==="withdraw") message=`Hello, I want to withdraw OMX.\nMy User ID is ${uid}`;
+  else if(type==="balance"){alert("Your balance is "+currentBalance.toFixed(2)+" OMX"); return;}
+  const url=`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url,"_blank");
+}
+
+document.getElementById('accountManagerBtn').onclick=()=>{
+  const phoneNumber="2348137651231";
+  const message=`Hello Account Manager,\nMy User ID is ${uid}`;
+  const url=`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  window.open(url,"_blank");
+}
+
+// Login/Register
+function login(){
+  const e=inputToEmail(emailOrPhone.value), p=password.value.trim();
+  if(!e||!p) return alert("Fill all fields");
+  auth.signInWithEmailAndPassword(e,p).then(r=>checkUserInFirestore(r.user.uid,e)).catch(err=>alert(err.message));
+}
+
+function newAccount(){
+  const e=inputToEmail(emailOrPhone.value), p=password.value.trim();
+  if(!e||!p) return alert("Fill all fields");
+  auth.createUserWithEmailAndPassword(e,p).then(r=>checkUserInFirestore(r.user.uid,e,true))
+  .catch(err=>{if(err.code==='auth/email-already-in-use') alert('Already registered. Login instead'); else alert(err.message)});
+}
+
+function checkUserInFirestore(firebaseUID,email,isNew=false){
+  userRef=db.collection("users").doc(firebaseUID);
+  userRef.get().then(doc=>{
+    if(doc.exists){
+      uid=doc.data().uid;
+      currentBalance=Number(doc.data().balance);
+      updateBalanceDisplay(currentBalance);
+      onLoginSuccess();
+    }
+    else{
+      uid=generateUID();
+      userRef.set({uid,email,balance:0}).then(()=>{
+        currentBalance=0;
+        updateBalanceDisplay(currentBalance);
+        onLoginSuccess();
+      });
+    }
+  });
+}
+
+function onLoginSuccess(){
+  verified.style.display="block";
+  loginBox.style.display="none";
+  actionsContainer.style.display="flex";
+  document.getElementById("userId").innerText="User ID: "+uid;
+  profileUID.innerText=uid;
+  profileEmail.innerText=auth.currentUser.email;
+  profileBalance.innerText=currentBalance.toFixed(2)+" OMX";
+  initializeChart();
+}
+
+function toggleProfile(){
+  profileCard.style.display=(profileCard.style.display==="none")?"block":"none";
+}
+
+function logout(){
+  auth.signOut().then(()=>{
+    actionsContainer.style.display="none";
+    chartCanvas.style.display="none";
+    location.reload();
+  });
+}
+
+convertBtn.onclick=()=>{
+  balanceAmountSpan.innerText=(currentBalance*RATE).toFixed(2)+" ₦";
+  setTimeout(()=>{
+    balanceAmountSpan.innerText=currentBalance.toFixed(2)+" OMX";
+  },8000);
+}
+
+// Chart
+function initializeChart(){
+  const MAX_POINTS=120;
+  let base=RATE, chartData=[];
+
+  for(let i=0;i<MAX_POINTS;i++){
+    chartData.push(base+Math.sin(i/10)*2+i*0.2);
+  }
+
+  function nextValue(last){
+    const biasUp=0.35,
+    rnd=(Math.random()-0.5)*2,
+    drift=0.6,
+    step=rnd*1.2+drift+(Math.random()<biasUp?0.6:0);
+
+    const minV=RATE*0.6,maxV=RATE*3.0;
+    return Math.max(minV,Math.min(maxV,last+step));
+  }
+
+  function getMinMax(arr){
+    let min=Infinity,max=-Infinity;
+    for(const v of arr){
+      if(v<min) min=v;
+      if(v>max) max=v;
+    }
+    const pad=Math.max(5,(max-min)*0.15);
+    return {min:min-pad,max:max+pad};
+  }
+
+  function xAt(i,n,w){
+    return(i/(n-1))*w;
+  }
+
+  function yAt(v,min,max,h){
+    return h-((v-min)/(max-min))*h;
+  }
+
+  function drawLine(arr){
+    const w=chartCanvas.clientWidth,
+    h=chartCanvas.clientHeight,
+    n=arr.length;
+
+    if(n<2)return;
+
+    const {min,max}=getMinMax(arr);
+    const up=arr[n-1]>=arr[n-2];
+    const mainColor=up?"#22c55e":"#ef4444";
+
+    const g=ctx.createLinearGradient(0,0,0,h);
+
+    g.addColorStop(
+      0,
+      up?"rgba(34,197,94,0.18)":"rgba(239,68,68,0.18)"
+    );
+
+    g.addColorStop(1,"rgba(0,0,0,0.02)");
+
+    ctx.beginPath();
+    ctx.moveTo(
+      xAt(0,n,w),
+      yAt(arr[0],min,max,h)
+    );
+
+    for(let i=1;i<n;i++){
+      ctx.lineTo(
+        xAt(i,n,w),
+        yAt(arr[i],min,max,h)
+      );
+    }
+
+    ctx.lineTo(w,h);
+    ctx.lineTo(0,h);
+    ctx.closePath();
+    ctx.fillStyle=g;
+    ctx.fill();
+
+    ctx.lineWidth=2;
+    ctx.strokeStyle=mainColor;
+    ctx.shadowColor=mainColor;
+    ctx.shadowBlur=14;
+
+    ctx.beginPath();
+    ctx.moveTo(
+      xAt(0,n,w),
+      yAt(arr[0],min,max,h)
+    );
+
+    for(let i=1;i<n;i++){
+      ctx.lineTo(
+        xAt(i,n,w),
+        yAt(arr[i],min,max,h)
+      );
+    }
+
+    ctx.stroke();
+
+    const lx=xAt(n-1,n,w),
+    ly=yAt(arr[n-1],min,max,h);
+
+    ctx.shadowBlur=22;
+    ctx.fillStyle=mainColor;
+
+    ctx.beginPath();
+    ctx.arc(lx,ly,3,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  function renderChart(){
+    ctx.clearRect(
+      0,
+      0,
+      chartCanvas.clientWidth,
+      chartCanvas.clientHeight
+    );
+
+    drawLine(chartData);
+  }
+
+  function stepChart(){
+    chartData.push(
+      nextValue(chartData[chartData.length-1])
+    );
+
+    if(chartData.length>MAX_POINTS)
+      chartData.shift();
+
+    renderChart();
+  }
+
+  function resizeChartCanvas(){
+    const dpr=window.devicePixelRatio||1,
+    w=chartCanvas.clientWidth,
+    h=chartCanvas.clientHeight;
+
+    chartCanvas.width=Math.floor(w*dpr);
+    chartCanvas.height=Math.floor(h*dpr);
+
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    renderChart();
+  }
+
+  window.addEventListener(
+    "resize",
+    resizeChartCanvas,
+    {passive:true}
+  );
+
+  resizeChartCanvas();
+  setInterval(stepChart,2000);
+}
+
+// Auth state
+auth.onAuthStateChanged(user=>{
+  if(user){
+    uid=user.uid;
+    checkUserInFirestore(uid,user.email);
+  }
+});
+
+// ---------------- SEND COIN LOGIC ----------------
+
+// Toggle form
+toggleSendCoinBtn.onclick=()=>{
+  sendCoinForm.style.display =
+    sendCoinForm.style.display === "block"
+    ? "none"
+    : "block";
+
+  txHistory.style.display="none";
+  receiverUID.value="";
+  sendAmount.value="";
+  senderPassword.value="";
+  lockMessage.style.display="none";
+};
+
+// Confirm Send
+confirmSendBtn.onclick=async()=>{
+
+  const now=Date.now();
+
+  if(now<lockUntil){
+    lockMessage.style.display="block";
+    lockMessage.innerText="Locked due to wrong password attempts.";
+    return;
+  }
+
+  const receiverCustomUID=receiverUID.value.trim();
+  const amount=Number(sendAmount.value);
+  const passwordInput=senderPassword.value;
+
+  if(!receiverCustomUID || !amount || !passwordInput)
+    return alert("Fill all fields");
+
+  if(amount<=0)
+    return alert("Invalid amount");
+
+  if(amount>currentBalance)
+    return alert("Insufficient balance");
+
+  // Re-authenticate user
+  const credential=firebase.auth.EmailAuthProvider.credential(
+    auth.currentUser.email,
+    passwordInput
+  );
+
+  try{
+    await auth.currentUser.reauthenticateWithCredential(credential);
+  }
+  catch(err){
+
+    wrongAttempts++;
+
+    if(wrongAttempts>=3){
+
+      lockUntil=now+(5*60*60*1000);
+
+      lockMessage.style.display="block";
+      lockMessage.innerText="Too many wrong attempts. Locked 5 hours.";
+
+      wrongAttempts=0;
+
+    }
+    else{
+      alert("Wrong password");
+    }
+
+    return;
+  }
+
+  try{
+
+    await db.runTransaction(async(transaction)=>{
+
+      // Sender document (by firebase UID)
+      const senderDocRef=db.collection("users").doc(auth.currentUser.uid);
+      const senderDoc=await transaction.get(senderDocRef);
+
+      if(!senderDoc.exists)
+        throw "Sender not found";
+
+      const senderBalance=Number(senderDoc.data().balance);
+
+      if(senderBalance<amount)
+        throw "Insufficient balance";
+
+      // Find receiver by custom UID field
+      const receiverQuery=await db.collection("users")
+        .where("uid","==",receiverCustomUID)
+        .limit(1)
+        .get();
+
+      if(receiverQuery.empty)
+        throw "Receiver not found";
+
+      const receiverDoc=receiverQuery.docs[0];
+      const receiverRef=receiverDoc.ref;
+
+      transaction.update(senderDocRef,{
+        balance:senderBalance-amount
+      });
+
+      transaction.update(receiverRef,{
+        balance:Number(receiverDoc.data().balance)+amount
+      });
+
+      transaction.set(
+        db.collection("transactions").doc(),
+        {
+          from:senderDoc.data().uid,
+          to:receiverCustomUID,
+          amount:amount,
+          timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        }
+      );
+
+    });
+
+    alert("OMX sent successfully!");
+
+    receiverUID.value="";
+    sendAmount.value="";
+    senderPassword.value="";
+    lockMessage.style.display="none";
+
+  }
+  catch(err){
+    alert("Transaction failed: "+err);
+  }
+};
+
+// Transaction History
+showTxHistoryBtn.onclick=()=>{
+
+  txHistory.style.display =
+    txHistory.style.display==="block"
+    ? "none"
+    : "block";
+
+  if(txHistory.style.display==="block"){
+
+    txHistory.innerHTML="";
+
+    db.collection("transactions")
+      .orderBy("timestamp","desc")
+      .onSnapshot(snapshot=>{
+
+        txHistory.innerHTML="";
+
+        snapshot.forEach(doc=>{
+
+          const data=doc.data();
+
+          if(data.from===uid || data.to===uid){
+
+            const div=document.createElement("div");
+            div.className="txItem";
+
+            const time=data.timestamp
+              ? new Date(
+                  data.timestamp.toDate()
+                ).toLocaleString()
+              : "";
+
+            div.innerHTML=`
+              From: ${data.from}<br>
+              To: ${data.to}<br>
+              Amount: ${data.amount} OMX<br>
+              Time: ${time}
+            `;
+
+            txHistory.appendChild(div);
+          }
+        });
+      });
+  }
+};
+
+// Load OMX rate
+db.collection("settings").doc("omxRate").get().then(doc=>{
+  RATE=doc.exists?doc.data().rate:1350;
+  omxPrice.innerText=`1 OMX = ₦${RATE}`;
+});
+</script>
+
+</body>
+  </html>
