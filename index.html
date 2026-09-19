@@ -1,0 +1,2697 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNIX</title><style>
+:root{
+  --bg:#0b0e11;
+  --panel:#131722;
+  --text:#e6e6e6;
+  --gold:#d4af37;
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#3b82f6;
+  --muted:#9ca3af;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+
+#totalBalance{
+  position:fixed;
+  top:14px;
+  left:14px;
+  background:var(--gold);
+  color:#000;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:800;
+  z-index:1000;
+  display:none;
+}
+
+#accountManagerContainer{
+  position:fixed;
+  top:14px;
+  right:14px;
+  z-index:1000;
+}
+
+#accountManagerBtn{
+  background:var(--green);
+  color:#000;
+  padding:6px 10px;
+  border:none;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+header{
+  background:#000;
+  color:#fff;
+  text-align:center;
+  padding:14px;
+  font-weight:800;
+  font-size:20px;
+  margin-top:60px;
+}
+
+.container{
+  padding:16px;
+  max-width:900px;
+  margin:60px auto;
+}
+
+.card{
+  background:var(--panel);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:16px;
+}
+
+.price{
+  text-align:center;
+  color:var(--gold);
+  font-weight:900;
+  font-size:20px;
+}
+
+.userid{
+  text-align:center;
+  color:var(--green);
+  font-weight:800;
+  margin-top:6px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.buy{background:var(--green);color:#000}
+.withdraw{background:var(--red);color:#fff}
+.balance{background:var(--gold);color:#000}
+.sendCoin{background:var(--blue);color:#fff}
+
+.login input{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border-radius:10px;
+  border:none;
+}
+
+.login button{
+  width:48%;
+  padding:12px;
+  background:#e11d48;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  font-weight:800;
+  margin-right:4%;
+}
+
+.verified{
+  text-align:center;
+  color:var(--green);
+  display:none;
+}
+
+/* =========================================================
+   BUY SECTION
+========================================================= */
+
+#buySection{
+  display:none;
+  margin-top:15px;
+}
+
+.buyTitle{
+  color:var(--gold);
+  text-align:center;
+  margin-top:0;
+}
+
+.buyRate{
+  text-align:center;
+  background:#0b0e11;
+  padding:15px;
+  border-radius:12px;
+  margin:12px 0;
+}
+
+.buyRate strong{
+  display:block;
+  color:var(--gold);
+  font-size:26px;
+}
+
+.buyRate span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* TIMER */
+
+.buyTimerBox{
+  background:#0b0e11;
+  border:1px solid var(--red);
+  border-radius:12px;
+  padding:12px;
+  text-align:center;
+  margin:12px 0;
+}
+
+.buyTimerLabel{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+#buyTimer{
+  color:var(--red);
+  font-size:27px;
+  font-weight:900;
+  margin-top:5px;
+}
+
+/* BUY INPUT */
+
+.buyInput{
+  width:100%;
+  padding:14px;
+  background:#0b0e11;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:10px;
+  font-size:17px;
+  margin:8px 0;
+}
+
+.buySummary{
+  background:#0b0e11;
+  padding:14px;
+  border-radius:10px;
+  margin:12px 0;
+}
+
+.buySummary div{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+}
+
+.buyTotal{
+  color:var(--green);
+  font-size:22px;
+  font-weight:900;
+}
+
+.paymentBox{
+  border:1px solid var(--gold);
+  border-radius:12px;
+  padding:15px;
+  margin-top:15px;
+}
+
+.paymentBox h3{
+  margin-top:0;
+  color:var(--gold);
+}
+
+.paymentLine{
+  padding:9px 0;
+  border-top:1px solid #2b303a;
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.paymentValue{
+  font-weight:800;
+  text-align:right;
+  word-break:break-word;
+}
+
+.reference{
+  color:var(--green);
+  font-family:monospace;
+  font-size:17px;
+}
+
+.notice{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+
+/* SEND RECEIPT BUTTON */
+
+.whatsappBtn{
+  width:100%;
+  background:#25D366;
+  color:#000;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  font-weight:900;
+  font-size:16px;
+  cursor:pointer;
+  margin-top:12px;
+}
+
+/* BUY STATUS */
+
+.buyStatus{
+  padding:12px;
+  border-radius:10px;
+  margin-top:12px;
+  display:none;
+  line-height:1.5;
+}
+
+.pending{
+  background:#332a13;
+  color:#f0b840;
+}
+
+.success{
+  background:#12291e;
+  color:#22c55e;
+}
+
+.error{
+  background:#321716;
+  color:#ef4444;
+}
+
+/* =========================================================
+   RATE TABLE
+========================================================= */
+
+.rateTableBox{
+  background:#131722;
+  border:1px solid var(--gold);
+  border-radius:14px;
+  padding:16px;
+  margin-top:16px;
+}
+
+.rateTableTitle{
+  color:var(--gold);
+  text-align:center;
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+
+.rateTableCurrent{
+  text-align:center;
+  color:var(--green);
+  font-size:21px;
+  font-weight:900;
+  margin-bottom:15px;
+}
+
+.rateList{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.rateItem{
+  background:#0b0e11;
+  padding:9px 5px;
+  border-radius:8px;
+  text-align:center;
+  font-size:13px;
+  font-weight:700;
+}
+
+.rateNote{
+  background:#0b0e11;
+  color:var(--gold);
+  padding:12px;
+  border-radius:9px;
+  text-align:center;
+  margin-top:15px;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.5;
+}
+
+/* SEND COIN */
+
+#sendCoinForm{
+  display:none;
+  margin-top:10px;
+}
+
+#sendCoinForm input{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:8px;
+  border:none;
+}
+
+#sendCoinForm button{
+  padding:10px 16px;
+  margin:4px;
+  border:none;
+  border-radius:8px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+#confirmSendBtn{
+  background:#22c55e;
+  color:#000;
+}
+
+#showTxHistoryBtn{
+  background:#d4af37;
+  color:#000;
+}
+
+#txHistory{
+  display:none;
+  margin-top:10px;
+}
+
+.txItem{
+  background:#1f2937;
+  padding:8px;
+  border-radius:8px;
+  margin-bottom:6px;
+}
+
+.lockMessage{
+  color:#ef4444;
+  font-weight:800;
+  margin-top:10px;
+}
+
+/* PROFILE */
+
+#profileBtn{
+  position:fixed;
+  bottom:14px;
+  left:14px;
+  z-index:1000;
+}
+
+#profileCard{
+  position:fixed;
+  bottom:60px;
+  left:14px;
+  width:250px;
+  display:none;
+  z-index:1000;
+}
+
+/* CHART */
+
+#chartContainer{
+  display:block;
+  width:90%;
+  max-width:900px;
+  margin:20px auto;
+}
+
+#chartContainer canvas{
+  width:100%;
+  height:300px;
+  background:#0d1117;
+  border-radius:12px;
+}
+
+.hidden{
+  display:none !important;
+}
+
+@media(max-width:600px){
+
+  .row{
+    flex-wrap:wrap;
+  }
+
+  .row .btn{
+    min-width:45%;
+  }
+
+  .paymentLine{
+    flex-direction:column;
+  }
+
+  .paymentValue{
+    text-align:left;
+  }
+
+  .rateList{
+    grid-template-columns:1fr 1fr;
+  }
+
+}
+</style></head><body><div id="totalBalance">  <span id="balanceAmount">
+    0.00 OMX
+  </span><button id="convertBtn"
+style="margin-left:6px;padding:4px 6px;border:none;border-radius:6px;background:#ef4444;color:#fff;font-weight:800;">
+Convert
+</button>
+
+</div><div id="accountManagerContainer">  <button id="accountManagerBtn">
+    Account Manager
+  </button></div><header>
+  💎 OMNIX — OMX
+</header><div class="container"><div class="card">  <div class="price" id="omxPrice">
+    1 OMX = ₦0
+  </div>  <div id="userId" class="userid">
+    User ID: ...
+  </div>  <div id="actionsContainer"
+       class="row"
+       style="display:none;margin-top:14px;"><button class="btn buy"
+        onclick="openBuy()">
+  Buy
+</button>
+
+<button class="btn withdraw"
+        onclick="sendRequest('withdraw')">
+  Withdraw
+</button>
+
+<button class="btn balance"
+        onclick="sendRequest('balance')">
+  Balance
+</button>
+
+<button class="btn sendCoin"
+        id="toggleSendCoinBtn">
+  Send
+</button>
+
+  </div>  <!-- =====================================================
+       BUY OMX
+  ====================================================== -->  <div id="buySection"><div class="card">
+
+  <h2 class="buyTitle">
+    💎 BUY OMX
+  </h2>
+
+
+  <div class="buyRate">
+
+    <strong id="buyRateDisplay">
+      1 OMX = ₦0
+    </strong>
+
+    <span>
+      Current OMNIX rate
+    </span>
+
+  </div>
+
+
+  <!-- 10 MINUTE COUNTDOWN -->
+
+  <div class="buyTimerBox">
+
+    <div class="buyTimerLabel">
+      PAYMENT TIME REMAINING
+    </div>
+
+    <div id="buyTimer">
+      10:00
+    </div>
+
+  </div>
+
+
+  <label>
+    How many OMX do you want to buy?
+  </label>
+
+  <input
+    class="buyInput"
+    type="number"
+    id="buyAmount"
+    min="1"
+    step="1"
+    placeholder="Enter OMX amount"
+    oninput="calculateBuy()"
+  >
+
+
+  <div class="buySummary">
+
+    <div>
+      <span>OMX Amount</span>
+
+      <strong id="summaryOMX">
+        0 OMX
+      </strong>
+    </div>
+
+    <div>
+      <span>Current Rate</span>
+
+      <strong id="summaryRate">
+        ₦0
+      </strong>
+    </div>
+
+    <div>
+      <span>Total Payment</span>
+
+      <strong class="buyTotal"
+              id="summaryTotal">
+        ₦0
+      </strong>
+    </div>
+
+  </div>
+
+
+  <!-- PAYMENT DETAILS -->
+
+  <div class="paymentBox">
+
+    <h3>
+      💳 PAYMENT DETAILS
+    </h3>
+
+    <div class="paymentLine">
+
+      <span>
+        🏦 Bank
+      </span>
+
+      <span class="paymentValue"
+            id="buyBank">
+        MONIEPOINT
+      </span>
+
+    </div>
+
+
+    <div class="paymentLine">
+
+      <span>
+        👤 Account Name
+      </span>
+
+      <span class="paymentValue"
+            id="buyAccountName">
+        HAMIDU
+      </span>
+
+    </div>
+
+
+    <div class="paymentLine">
+
+      <span>
+        💳 Account Number
+      </span>
+
+      <span class="paymentValue"
+            id="buyAccountNumber">
+        8231336539
+      </span>
+
+    </div>
+
+
+    <div class="paymentLine">
+
+      <span>
+        Reference
+      </span>
+
+      <span class="paymentValue reference"
+            id="buyReference">
+        ---
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="notice">
+
+    Your User ID is used as your purchase reference.
+
+    <br><br>
+
+    Make the exact payment amount shown above.
+
+    <br><br>
+
+    After making payment, tap
+    <strong>SEND RECEIPT</strong>.
+
+  </div>
+
+
+  <!-- SEND RECEIPT -->
+
+  <button
+    class="whatsappBtn"
+    id="sendReceiptBtn"
+    onclick="sendBuyReceipt()">
+
+    SEND RECEIPT
+
+  </button>
+
+
+  <div id="buyStatus"
+       class="buyStatus pending">
+  </div>
+
+
+  <button
+    class="closeBuy"
+    onclick="closeBuy()">
+
+    Close Buy
+
+  </button>
+
+</div>
+
+
+<!-- =================================================
+     FULL OMX RATE TABLE
+================================================== -->
+
+<div class="rateTableBox">
+
+  <div class="rateTableTitle">
+    💎 OMNIX (OMX) — CURRENT RATE
+  </div>
+
+  <div class="rateTableCurrent"
+       id="rateTableCurrent">
+    1 OMX = ₦850
+  </div>
+
+  <div class="rateList"
+       id="rateList">
+
+    <!-- Filled automatically by JavaScript -->
+
+  </div>
+
+  <div class="rateNote">
+    ✍️ The higher you buy, the higher your potential gain
+  </div>
+
+</div>
+
+  </div>  <!-- =====================================================
+       SEND COIN
+  ====================================================== -->  <div id="sendCoinForm"><input
+  type="text"
+  id="receiverUID"
+  placeholder="Receiver User ID">
+
+<input
+  type="number"
+  id="sendAmount"
+  placeholder="Amount">
+
+<input
+  type="password"
+  id="senderPassword"
+  placeholder="Your Login Password">
+
+<button id="confirmSendBtn">
+  Confirm Send
+</button>
+
+<div class="lockMessage"
+     id="lockMessage"
+     style="display:none;">
+</div>
+
+<button id="showTxHistoryBtn">
+  Transaction History
+</button>
+
+  </div>  <div id="txHistory"></div></div><!-- LOGIN --><div id="loginBox"
+     class="card login">  <h3>
+    Login / Register
+  </h3><input
+id="emailOrPhone"
+placeholder="Email or Phone">
+
+<input
+id="password"
+type="password"
+placeholder="Password">
+
+  <div class="row"><button onclick="login()">
+  Login
+</button>
+
+<button onclick="newAccount()">
+  New Account
+</button>
+
+  </div>  <div id="verified"
+       class="verified">
+    Logged in
+  </div></div></div><!-- PROFILE --><div id="profileBtn"><button
+style="background:var(--green);color:#000;padding:10px 14px;border:none;border-radius:10px;font-weight:800;cursor:pointer;"
+onclick="toggleProfile()">
+
+Profile
+
+  </button></div><div id="profileCard"
+     class="card">  <h3>
+    Profile
+  </h3>  <div>
+    Email:
+    <span id="profileEmail">
+      ...
+    </span>
+  </div>  <div>
+    User ID:
+    <span id="profileUID">
+      ...
+    </span>
+  </div>  <div>
+    Balance:
+    <span id="profileBalance">
+      0.00 OMX
+    </span>
+  </div>  <div class="row"
+       style="margin-top:10px;"><button
+  onclick="logout()"
+  style="background:#ef4444;color:#fff;width:100%;padding:10px;border:none;border-radius:8px;font-weight:800;">
+
+  Log Out
+
+</button>
+
+  </div></div><!-- CHART --><div id="chartContainer"><canvas id="chart"></canvas>
+
+</div><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script>
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+firebase.initializeApp({
+
+  apiKey:"AIzaSyAOqTiP-jyyRszWdfl5h_kkNfrkccGaN-M",
+
+  authDomain:"omnix-c36ed.firebaseapp.com",
+
+  projectId:"omnix-c36ed"
+
+});
+
+const auth=firebase.auth();
+
+const db=firebase.firestore();
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let uid;
+
+let userRef;
+
+let currentBalance=0;
+
+let RATE=0;
+
+let wrongAttempts=0;
+
+let lockUntil=0;
+
+
+/* =========================================================
+   BUY VARIABLES
+========================================================= */
+
+const BUY_ACCOUNT={
+
+  bank:"MONIEPOINT",
+
+  name:"HAMIDU",
+
+  number:"8231336539"
+
+};
+
+const WHATSAPP_NUMBER="2348106150562";
+
+
+/* 10 MINUTE TIMER */
+
+let buyTimerInterval=null;
+
+let buyTimeLeft=600;
+
+
+/* SEND RECEIPT TAP COUNTER */
+
+let receiptTapCount=0;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const balanceAmountSpan=
+document.getElementById("balanceAmount");
+
+const convertBtn=
+document.getElementById("convertBtn");
+
+const actionsContainer=
+document.getElementById("actionsContainer");
+
+const omxPrice=
+document.getElementById("omxPrice");
+
+const profileCard=
+document.getElementById("profileCard");
+
+const profileUID=
+document.getElementById("profileUID");
+
+const profileEmail=
+document.getElementById("profileEmail");
+
+const chartCanvas=
+document.getElementById("chart");
+
+const ctx=
+chartCanvas.getContext("2d");
+
+const toggleSendCoinBtn=
+document.getElementById("toggleSendCoinBtn");
+
+const sendCoinForm=
+document.getElementById("sendCoinForm");
+
+const receiverUID=
+document.getElementById("receiverUID");
+
+const sendAmount=
+document.getElementById("sendAmount");
+
+const senderPassword=
+document.getElementById("senderPassword");
+
+const confirmSendBtn=
+document.getElementById("confirmSendBtn");
+
+const lockMessage=
+document.getElementById("lockMessage");
+
+const showTxHistoryBtn=
+document.getElementById("showTxHistoryBtn");
+
+const txHistory=
+document.getElementById("txHistory");
+
+const emailOrPhone=
+document.getElementById("emailOrPhone");
+
+const password=
+document.getElementById("password");
+
+const verified=
+document.getElementById("verified");
+
+const loginBox=
+document.getElementById("loginBox");
+
+
+/* =========================================================
+   UTILITY
+========================================================= */
+
+function generateUID(){
+
+  return Math.floor(
+    100000000+
+    Math.random()*900000000
+  ).toString();
+
+}
+
+
+function inputToEmail(input){
+
+  input=input.trim();
+
+  return input.includes("@")
+    ?input
+    :input.replace(/\s+/g,"")+"@omnix.app";
+
+}
+
+
+function updateBalanceDisplay(amount){
+
+  currentBalance=Number(amount);
+
+  balanceAmountSpan.innerText=
+    currentBalance.toFixed(2)+" OMX";
+
+  profileBalance.innerText=
+    currentBalance.toFixed(2)+" OMX";
+
+  document.getElementById(
+    "totalBalance"
+  ).style.display="block";
+
+}
+
+
+/* =========================================================
+   RATE TABLE
+========================================================= */
+
+function renderRateTable(){
+
+  const rate=
+    Number(RATE)||850;
+
+  const rateTableCurrent=
+    document.getElementById(
+      "rateTableCurrent"
+    );
+
+  const rateList=
+    document.getElementById(
+      "rateList"
+    );
+
+  rateTableCurrent.innerText=
+    "1 OMX = ₦"+
+    rate.toLocaleString("en-NG");
+
+  rateList.innerHTML="";
+
+
+  const amounts=[
+    1,2,3,4,5,6,7,8,9,10,
+    20,30,40,50,60,70,80,90,100,
+    200,300,400,500,600,700,800,
+    900,1000,2000
+  ];
+
+
+  amounts.forEach(amount=>{
+
+    const total=
+      amount*rate;
+
+    const div=
+      document.createElement("div");
+
+    div.className="rateItem";
+
+    div.innerText=
+      amount.toLocaleString("en-NG")+
+      " OMX = ₦"+
+      total.toLocaleString("en-NG");
+
+    rateList.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================================
+   BUY FEATURE
+========================================================= */
+
+function openBuy(){
+
+  if(!auth.currentUser){
+
+    alert("Please login first.");
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "buySection"
+  ).style.display="block";
+
+
+  document.getElementById(
+    "buyReference"
+  ).innerText=uid;
+
+
+  document.getElementById(
+    "buyBank"
+  ).innerText=
+    BUY_ACCOUNT.bank;
+
+
+  document.getElementById(
+    "buyAccountName"
+  ).innerText=
+    BUY_ACCOUNT.name;
+
+
+  document.getElementById(
+    "buyAccountNumber"
+  ).innerText=
+    BUY_ACCOUNT.number;
+
+
+  document.getElementById(
+    "buyRateDisplay"
+  ).innerText=
+    "1 OMX = ₦"+
+    Number(RATE).toLocaleString("en-NG");
+
+
+  document.getElementById(
+    "summaryRate"
+  ).innerText=
+    "₦"+
+    Number(RATE).toLocaleString("en-NG");
+
+
+  /*
+    RESET RECEIPT BUTTON PROCESS
+  */
+
+  receiptTapCount=0;
+
+
+  /*
+    START 10 MINUTE COUNTDOWN
+  */
+
+  startBuyTimer();
+
+
+  /*
+    UPDATE RATE TABLE
+  */
+
+  renderRateTable();
+
+
+  window.scrollTo({
+
+    top:
+      document.getElementById(
+        "buySection"
+      ).offsetTop-20,
+
+    behavior:"smooth"
+
+  });
+
+}
+
+
+/* =========================================================
+   CLOSE BUY
+========================================================= */
+
+function closeBuy(){
+
+  document.getElementById(
+    "buySection"
+  ).style.display="none";
+
+  stopBuyTimer();
+
+}
+
+
+/* =========================================================
+   BUY CALCULATION
+========================================================= */
+
+function calculateBuy(){
+
+  const amount=
+    Number(
+      document.getElementById(
+        "buyAmount"
+      ).value
+    );
+
+  const total=
+    amount*RATE;
+
+
+  document.getElementById(
+    "summaryOMX"
+  ).innerText=
+    amount>0
+      ?amount.toLocaleString("en-NG")+" OMX"
+      :"0 OMX";
+
+
+  document.getElementById(
+    "summaryTotal"
+  ).innerText=
+    amount>0
+      ?"₦"+total.toLocaleString("en-NG")
+      :"₦0";
+
+}
+
+
+/* =========================================================
+   10 MINUTE COUNTDOWN
+========================================================= */
+
+function startBuyTimer(){
+
+  stopBuyTimer();
+
+  buyTimeLeft=600;
+
+  updateBuyTimerDisplay();
+
+
+  buyTimerInterval=
+    setInterval(()=>{
+
+      buyTimeLeft--;
+
+      updateBuyTimerDisplay();
+
+
+      if(buyTimeLeft<=0){
+
+        stopBuyTimer();
+
+        buyTimeLeft=0;
+
+        updateBuyTimerDisplay();
+
+
+        const status=
+          document.getElementById(
+            "buyStatus"
+          );
+
+        status.style.display="block";
+
+        status.className=
+          "buyStatus error";
+
+        status.innerHTML=
+          "⏰ <strong>Payment time has expired.</strong><br><br>"+
+          "Please close Buy OMX and open it again to start a new 10-minute payment window.";
+
+      }
+
+    },1000);
+
+}
+
+
+/* =========================================================
+   STOP TIMER
+========================================================= */
+
+function stopBuyTimer(){
+
+  if(buyTimerInterval!==null){
+
+    clearInterval(
+      buyTimerInterval
+    );
+
+    buyTimerInterval=null;
+
+  }
+
+}
+
+
+/* =========================================================
+   UPDATE TIMER
+========================================================= */
+
+function updateBuyTimerDisplay(){
+
+  const timer=
+    document.getElementById(
+      "buyTimer"
+    );
+
+  const minutes=
+    Math.floor(
+      buyTimeLeft/60
+    );
+
+  const seconds=
+    buyTimeLeft%60;
+
+
+  timer.innerText=
+    String(minutes).padStart(2,"0")+
+    ":"+
+    String(seconds).padStart(2,"0");
+
+
+  if(buyTimeLeft<=60){
+
+    timer.style.color=
+      "#ef4444";
+
+  }
+
+  else{
+
+    timer.style.color=
+      "#ef4444";
+
+  }
+
+}
+
+
+/* =========================================================
+   SEND RECEIPT
+========================================================= */
+
+async function sendBuyReceipt(){
+
+  const status=
+    document.getElementById(
+      "buyStatus"
+    );
+
+
+  const amount=
+    Number(
+      document.getElementById(
+        "buyAmount"
+      ).value
+    );
+
+
+  /*
+    CHECK AMOUNT
+  */
+
+  if(!amount || amount<=0){
+
+    status.style.display="block";
+
+    status.className=
+      "buyStatus error";
+
+    status.innerHTML=
+      "⚠️ Please enter the amount of OMX you want to buy.";
+
+    return;
+
+  }
+
+
+  /*
+    CHECK LOGIN
+  */
+
+  if(!uid){
+
+    status.style.display="block";
+
+    status.className=
+      "buyStatus error";
+
+    status.innerHTML=
+      "⚠️ Please login first.";
+
+    return;
+
+  }
+
+
+  /*
+    CHECK TIMER
+  */
+
+  if(buyTimeLeft<=0){
+
+    status.style.display="block";
+
+    status.className=
+      "buyStatus error";
+
+    status.innerHTML=
+      "⏰ Your 10-minute payment time has expired.<br><br>"+
+      "Please close Buy OMX and open it again.";
+
+    return;
+
+  }
+
+
+  /*
+    FIRST TWO TAPS
+  */
+
+  if(receiptTapCount<2){
+
+    receiptTapCount++;
+
+
+    status.style.display="block";
+
+    status.className=
+      "buyStatus pending";
+
+
+    if(receiptTapCount===1){
+
+      status.innerHTML=
+        "⚠️ <strong>You haven't made payment.</strong><br><br>"+
+        "Please make payment to the account shown above before sending your receipt.";
+
+    }
+
+    else{
+
+      status.innerHTML=
+        "⚠️ <strong>You haven't made payment.</strong><br><br>"+
+        "Please make the payment first, then tap SEND RECEIPT again.";
+
+    }
+
+
+    return;
+
+  }
+
+
+  /*
+    THIRD TAP
+  */
+
+  const total=
+    amount*RATE;
+
+
+  status.style.display="block";
+
+  status.className=
+    "buyStatus pending";
+
+  status.innerHTML=
+    "⏳ Opening WhatsApp...";
+
+
+  /*
+    WHATSAPP MESSAGE
+  */
+
+  const message=
+
+`Hello OMNIX Account Manager,
+
+I have made payment for OMX.
+
+User ID: ${uid}
+
+OMX Amount: ${amount.toLocaleString("en-NG")} OMX
+
+OMX Rate: ₦${RATE.toLocaleString("en-NG")}
+
+Total Payment: ₦${total.toLocaleString("en-NG")}
+
+Reference: ${uid}
+
+I am sending my payment receipt for confirmation.
+
+Thank you.`;
+
+
+  const url=
+    "https://wa.me/"+
+    WHATSAPP_NUMBER+
+    "?text="+
+    encodeURIComponent(message);
+
+
+  /*
+    OPEN WHATSAPP
+  */
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+
+  status.className=
+    "buyStatus success";
+
+  status.innerHTML=
+    "✅ <strong>WhatsApp opened successfully.</strong><br><br>"+
+    "Reference: <strong>"+uid+"</strong><br><br>"+
+    "Attach your payment receipt and send the message to the Account Manager.";
+
+
+}
+
+
+/* =========================================================
+   OLD WHATSAPP REQUESTS
+========================================================= */
+
+function sendRequest(type){
+
+  const phoneNumber=
+    WHATSAPP_NUMBER;
+
+  let message="";
+
+
+  if(type==="withdraw"){
+
+    message=
+`Hello, I want to withdraw OMX.
+
+My User ID is ${uid}`;
+
+  }
+
+
+  else if(type==="balance"){
+
+    alert(
+      "Your balance is "+
+      currentBalance.toFixed(2)+
+      " OMX"
+    );
+
+    return;
+
+  }
+
+
+  const url=
+    `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}
+
+
+/* =========================================================
+   ACCOUNT MANAGER
+========================================================= */
+
+document.getElementById(
+  "accountManagerBtn"
+).onclick=()=>{
+
+  const message=
+`Hello Account Manager,
+
+My User ID is ${uid}`;
+
+
+  const url=
+    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+};
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function login(){
+
+  const e=
+    inputToEmail(
+      emailOrPhone.value
+    );
+
+  const p=
+    password.value.trim();
+
+
+  if(!e||!p){
+
+    alert(
+      "Fill all fields"
+    );
+
+    return;
+
+  }
+
+
+  auth
+    .signInWithEmailAndPassword(
+      e,
+      p
+    )
+    .then(r=>
+      checkUserInFirestore(
+        r.user.uid,
+        e
+      )
+    )
+    .catch(err=>
+      alert(
+        err.message
+      )
+    );
+
+}
+
+
+/* =========================================================
+   NEW ACCOUNT
+========================================================= */
+
+function newAccount(){
+
+  const e=
+    inputToEmail(
+      emailOrPhone.value
+    );
+
+  const p=
+    password.value.trim();
+
+
+  if(!e||!p){
+
+    alert(
+      "Fill all fields"
+    );
+
+    return;
+
+  }
+
+
+  auth
+    .createUserWithEmailAndPassword(
+      e,
+      p
+    )
+    .then(r=>
+      checkUserInFirestore(
+        r.user.uid,
+        e,
+        true
+      )
+    )
+    .catch(err=>{
+
+      if(
+        err.code===
+        "auth/email-already-in-use"
+      ){
+
+        alert(
+          "Already registered. Login instead"
+        );
+
+      }
+
+      else{
+
+        alert(
+          err.message
+        );
+
+      }
+
+    });
+
+}
+
+
+/* =========================================================
+   FIRESTORE USER
+========================================================= */
+
+function checkUserInFirestore(
+  firebaseUID,
+  email,
+  isNew=false
+){
+
+  userRef=
+    db
+    .collection("users")
+    .doc(firebaseUID);
+
+
+  userRef.get().then(doc=>{
+
+    if(doc.exists){
+
+      uid=
+        doc.data().uid;
+
+      currentBalance=
+        Number(
+          doc.data().balance||0
+        );
+
+
+      updateBalanceDisplay(
+        currentBalance
+      );
+
+
+      onLoginSuccess();
+
+    }
+
+    else{
+
+      uid=
+        generateUID();
+
+
+      userRef.set({
+
+        uid:uid,
+
+        email:email,
+
+        balance:0
+
+      }).then(()=>{
+
+        currentBalance=0;
+
+        updateBalanceDisplay(0);
+
+        onLoginSuccess();
+
+      });
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   LOGIN SUCCESS
+========================================================= */
+
+function onLoginSuccess(){
+
+  verified.style.display=
+    "block";
+
+  loginBox.style.display=
+    "none";
+
+  actionsContainer.style.display=
+    "flex";
+
+
+  document.getElementById(
+    "userId"
+  ).innerText=
+    "User ID: "+uid;
+
+
+  profileUID.innerText=
+    uid;
+
+
+  profileEmail.innerText=
+    auth.currentUser.email;
+
+
+  profileBalance.innerText=
+    currentBalance.toFixed(2)+
+    " OMX";
+
+
+  renderRateTable();
+
+
+  initializeChart();
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function toggleProfile(){
+
+  profileCard.style.display=
+    profileCard.style.display==="none"
+      ?"block"
+      :"none";
+
+}
+
+
+function logout(){
+
+  stopBuyTimer();
+
+  auth.signOut().then(()=>{
+
+    actionsContainer.style.display=
+      "none";
+
+    chartCanvas.style.display=
+      "none";
+
+    location.reload();
+
+  });
+
+}
+
+
+/* =========================================================
+   CONVERT BALANCE
+========================================================= */
+
+convertBtn.onclick=()=>{
+
+  balanceAmountSpan.innerText=
+    (currentBalance*RATE)
+      .toLocaleString("en-NG")+
+    " ₦";
+
+
+  setTimeout(()=>{
+
+    balanceAmountSpan.innerText=
+      currentBalance.toFixed(2)+
+      " OMX";
+
+  },8000);
+
+};
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+function initializeChart(){
+
+  const MAX_POINTS=120;
+
+  let base=RATE;
+
+  let chartData=[];
+
+
+  for(
+    let i=0;
+    i<MAX_POINTS;
+    i++
+  ){
+
+    chartData.push(
+      base+
+      Math.sin(i/10)*2+
+      i*0.2
+    );
+
+  }
+
+
+  function nextValue(last){
+
+    const biasUp=0.35;
+
+    const rnd=
+      (Math.random()-0.5)*2;
+
+    const drift=0.6;
+
+    const step=
+      rnd*1.2+
+      drift+
+      (Math.random()<biasUp?0.6:0);
+
+
+    const minV=
+      RATE*0.6;
+
+    const maxV=
+      RATE*3.0;
+
+
+    return Math.max(
+      minV,
+      Math.min(
+        maxV,
+        last+step
+      )
+    );
+
+  }
+
+
+  function getMinMax(arr){
+
+    let min=Infinity;
+
+    let max=-Infinity;
+
+
+    for(const v of arr){
+
+      if(v<min)min=v;
+
+      if(v>max)max=v;
+
+    }
+
+
+    const pad=
+      Math.max(
+        5,
+        (max-min)*0.15
+      );
+
+
+    return{
+
+      min:min-pad,
+
+      max:max+pad
+
+    };
+
+  }
+
+
+  function xAt(i,n,w){
+
+    return(
+      i/(n-1)
+    )*w;
+
+  }
+
+
+  function yAt(v,min,max,h){
+
+    return h-
+      ((v-min)/(max-min))*h;
+
+  }
+
+
+  function drawLine(arr){
+
+    const w=
+      chartCanvas.clientWidth;
+
+    const h=
+      chartCanvas.clientHeight;
+
+    const n=
+      arr.length;
+
+
+    if(n<2)return;
+
+
+    const {min,max}=
+      getMinMax(arr);
+
+
+    const up=
+      arr[n-1]>=arr[n-2];
+
+
+    const mainColor=
+      up
+        ?" #22c55e"
+        :"#ef4444";
+
+
+    const g=
+      ctx.createLinearGradient(
+        0,0,0,h
+      );
+
+
+    g.addColorStop(
+      0,
+      up
+        ?"rgba(34,197,94,0.18)"
+        :"rgba(239,68,68,0.18)"
+    );
+
+
+    g.addColorStop(
+      1,
+      "rgba(0,0,0,0.02)"
+    );
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+      xAt(0,n,w),
+      yAt(
+        arr[0],
+        min,
+        max,
+        h
+      )
+    );
+
+
+    for(
+      let i=1;
+      i<n;
+      i++
+    ){
+
+      ctx.lineTo(
+        xAt(i,n,w),
+        yAt(
+          arr[i],
+          min,
+          max,
+          h
+        )
+      );
+
+    }
+
+
+    ctx.lineTo(w,h);
+
+    ctx.lineTo(0,h);
+
+    ctx.closePath();
+
+    ctx.fillStyle=g;
+
+    ctx.fill();
+
+
+    ctx.lineWidth=2;
+
+    ctx.strokeStyle=
+      mainColor;
+
+    ctx.shadowColor=
+      mainColor;
+
+    ctx.shadowBlur=14;
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+      xAt(0,n,w),
+      yAt(
+        arr[0],
+        min,
+        max,
+        h
+      )
+    );
+
+
+    for(
+      let i=1;
+      i<n;
+      i++
+    ){
+
+      ctx.lineTo(
+        xAt(i,n,w),
+        yAt(
+          arr[i],
+          min,
+          max,
+          h
+        )
+      );
+
+    }
+
+
+    ctx.stroke();
+
+
+    const lx=
+      xAt(
+        n-1,
+        n,
+        w
+      );
+
+
+    const ly=
+      yAt(
+        arr[n-1],
+        min,
+        max,
+        h
+      );
+
+
+    ctx.shadowBlur=22;
+
+    ctx.fillStyle=
+      mainColor;
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+      lx,
+      ly,
+      3,
+      0,
+      Math.PI*2
+    );
+
+
+    ctx.fill();
+
+  }
+
+
+  function renderChart(){
+
+    ctx.clearRect(
+      0,
+      0,
+      chartCanvas.clientWidth,
+      chartCanvas.clientHeight
+    );
+
+
+    drawLine(chartData);
+
+  }
+
+
+  function stepChart(){
+
+    chartData.push(
+      nextValue(
+        chartData[
+          chartData.length-1
+        ]
+      )
+    );
+
+
+    if(
+      chartData.length>
+      MAX_POINTS
+    ){
+
+      chartData.shift();
+
+    }
+
+
+    renderChart();
+
+  }
+
+
+  function resizeChartCanvas(){
+
+    const dpr=
+      window.devicePixelRatio||1;
+
+
+    const w=
+      chartCanvas.clientWidth;
+
+    const h=
+      chartCanvas.clientHeight;
+
+
+    chartCanvas.width=
+      Math.floor(w*dpr);
+
+    chartCanvas.height=
+      Math.floor(h*dpr);
+
+
+    ctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+
+    renderChart();
+
+  }
+
+
+  window.addEventListener(
+    "resize",
+    resizeChartCanvas,
+    {passive:true}
+  );
+
+
+  resizeChartCanvas();
+
+
+  setInterval(
+    stepChart,
+    2000
+  );
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+auth.onAuthStateChanged(user=>{
+
+  if(user){
+
+    uid=user.uid;
+
+
+    checkUserInFirestore(
+      uid,
+      user.email
+    );
+
+  }
+
+});
+
+
+/* =========================================================
+   SEND COIN
+========================================================= */
+
+toggleSendCoinBtn.onclick=()=>{
+
+  sendCoinForm.style.display=
+    sendCoinForm.style.display==="block"
+      ?"none"
+      :"block";
+
+
+  txHistory.style.display=
+    "none";
+
+
+  receiverUID.value="";
+
+  sendAmount.value="";
+
+  senderPassword.value="";
+
+  lockMessage.style.display=
+    "none";
+
+};
+
+
+confirmSendBtn.onclick=async()=>{
+
+  const now=
+    Date.now();
+
+
+  if(now<lockUntil){
+
+    lockMessage.style.display=
+      "block";
+
+
+    lockMessage.innerText=
+      "Locked due to wrong password attempts.";
+
+
+    return;
+
+  }
+
+
+  const receiverCustomUID=
+    receiverUID.value.trim();
+
+
+  const amount=
+    Number(
+      sendAmount.value
+    );
+
+
+  const passwordInput=
+    senderPassword.value;
+
+
+  if(
+    !receiverCustomUID||
+    !amount||
+    !passwordInput
+  ){
+
+    return alert(
+      "Fill all fields"
+    );
+
+  }
+
+
+  if(amount<=0){
+
+    return alert(
+      "Invalid amount"
+    );
+
+  }
+
+
+  if(amount>currentBalance){
+
+    return alert(
+      "Insufficient balance"
+    );
+
+  }
+
+
+  const credential=
+    firebase.auth.EmailAuthProvider.credential(
+      auth.currentUser.email,
+      passwordInput
+    );
+
+
+  try{
+
+    await auth.currentUser
+      .reauthenticateWithCredential(
+        credential
+      );
+
+  }
+
+  catch(err){
+
+    wrongAttempts++;
+
+
+    if(wrongAttempts>=3){
+
+      lockUntil=
+        now+
+        (5*60*60*1000);
+
+
+      lockMessage.style.display=
+        "block";
+
+
+      lockMessage.innerText=
+        "Too many wrong attempts. Locked 5 hours.";
+
+
+      wrongAttempts=0;
+
+    }
+
+    else{
+
+      alert(
+        "Wrong password"
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+  try{
+
+    await db.runTransaction(
+      async(transaction)=>{
+
+        const senderDocRef=
+          db.collection("users")
+            .doc(
+              auth.currentUser.uid
+            );
+
+
+        const senderDoc=
+          await transaction.get(
+            senderDocRef
+          );
+
+
+        if(!senderDoc.exists)
+          throw "Sender not found";
+
+
+        const senderBalance=
+          Number(
+            senderDoc.data().balance
+          );
+
+
+        if(
+          senderBalance<amount
+        )
+          throw "Insufficient balance";
+
+
+        const receiverQuery=
+          await db.collection("users")
+            .where(
+              "uid",
+              "==",
+              receiverCustomUID
+            )
+            .limit(1)
+            .get();
+
+
+        if(
+          receiverQuery.empty
+        )
+          throw "Receiver not found";
+
+
+        const receiverDoc=
+          receiverQuery.docs[0];
+
+
+        const receiverRef=
+          receiverDoc.ref;
+
+
+        transaction.update(
+          senderDocRef,
+          {
+            balance:
+              senderBalance-amount
+          }
+        );
+
+
+        transaction.update(
+          receiverRef,
+          {
+            balance:
+              Number(
+                receiverDoc.data().balance
+              )+amount
+          }
+        );
+
+
+        transaction.set(
+          db.collection(
+            "transactions"
+          ).doc(),
+          {
+
+            from:
+              senderDoc.data().uid,
+
+            to:
+              receiverCustomUID,
+
+            amount:amount,
+
+            timestamp:
+              firebase.firestore
+              .FieldValue
+              .serverTimestamp()
+
+          }
+        );
+
+      }
+    );
+
+
+    alert(
+      "OMX sent successfully!"
+    );
+
+
+    receiverUID.value="";
+
+    sendAmount.value="";
+
+    senderPassword.value="";
+
+    lockMessage.style.display=
+      "none";
+
+  }
+
+  catch(err){
+
+    alert(
+      "Transaction failed: "+err
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   TRANSACTION HISTORY
+========================================================= */
+
+showTxHistoryBtn.onclick=()=>{
+
+  txHistory.style.display=
+    txHistory.style.display==="block"
+      ?"none"
+      :"block";
+
+
+  if(
+    txHistory.style.display==="block"
+  ){
+
+    txHistory.innerHTML="";
+
+
+    db.collection(
+      "transactions"
+    )
+    .orderBy(
+      "timestamp",
+      "desc"
+    )
+    .onSnapshot(
+      snapshot=>{
+
+        txHistory.innerHTML="";
+
+
+        snapshot.forEach(doc=>{
+
+          const data=
+            doc.data();
+
+
+          if(
+            data.from===uid||
+            data.to===uid
+          ){
+
+            const div=
+              document.createElement(
+                "div"
+              );
+
+
+            div.className=
+              "txItem";
+
+
+            const time=
+              data.timestamp
+                ?new Date(
+                  data.timestamp.toDate()
+                ).toLocaleString()
+                :"";
+
+
+            div.innerHTML=`
+
+              From: ${data.from}<br>
+
+              To: ${data.to}<br>
+
+              Amount: ${data.amount} OMX<br>
+
+              Time: ${time}
+
+            `;
+
+
+            txHistory.appendChild(
+              div
+            );
+
+          }
+
+        });
+
+      }
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   LOAD OMX RATE
+========================================================= */
+
+db.collection(
+  "settings"
+)
+.doc("omxRate")
+.get()
+.then(doc=>{
+
+  RATE=
+    doc.exists
+      ?Number(
+          doc.data().rate
+        )
+      :850;
+
+
+  omxPrice.innerText=
+    `1 OMX = ₦${RATE.toLocaleString("en-NG")}`;
+
+
+  document.getElementById(
+    "buyRateDisplay"
+  ).innerText=
+    `1 OMX = ₦${RATE.toLocaleString("en-NG")}`;
+
+
+  document.getElementById(
+    "summaryRate"
+  ).innerText=
+    `₦${RATE.toLocaleString("en-NG")}`;
+
+
+  /*
+    RENDER FULL RATE TABLE
+  */
+
+  renderRateTable();
+
+})
+.catch(error=>{
+
+  console.error(
+    "Rate loading error:",
+    error
+  );
+
+
+  RATE=850;
+
+
+  omxPrice.innerText=
+    "1 OMX = ₦850";
+
+
+  document.getElementById(
+    "buyRateDisplay"
+  ).innerText=
+    "1 OMX = ₦850";
+
+
+  document.getElementById(
+    "summaryRate"
+  ).innerText=
+    "₦850";
+
+
+  renderRateTable();
+
+});
+
+</script></body>
+</html>
